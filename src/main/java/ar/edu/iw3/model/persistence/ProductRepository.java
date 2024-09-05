@@ -10,4 +10,7 @@ import ar.edu.iw3.model.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 	Optional<Product> findByProduct(String product);
+
+	// https://docs.spring.io/spring-data/jpa/reference/jpa/getting-started.html
+	Optional<Product> findByProductAndIdNot(String product, long id);
 }

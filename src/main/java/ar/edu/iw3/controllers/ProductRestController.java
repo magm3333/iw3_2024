@@ -1,7 +1,5 @@
 package ar.edu.iw3.controllers;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -66,6 +64,7 @@ public class ProductRestController extends BaseRestController {
 			return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
+
 	@PostMapping(value = "")
 	public ResponseEntity<?> add(@RequestBody Product product) {
 		try {
@@ -80,9 +79,10 @@ public class ProductRestController extends BaseRestController {
 			return new ResponseEntity<>(response.build(HttpStatus.FOUND, e, e.getMessage()), HttpStatus.FOUND);
 		}
 	}
+
 	@PutMapping(value = "")
 	public ResponseEntity<?> update(@RequestBody Product product) {
-		try {
+		try {    
 			productBusiness.update(product);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (BusinessException e) {
@@ -90,8 +90,12 @@ public class ProductRestController extends BaseRestController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (NotFoundException e) {
 			return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (FoundException e) {
+			return new ResponseEntity<>(response.build(HttpStatus.FOUND, e, e.getMessage()), HttpStatus.FOUND);
 		}
+
 	}
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable long id) {
 		try {
