@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import ar.edu.iw3.integration.cli2.model.persistence.ProductCli2Respository;
 import ar.edu.iw3.model.business.IProductBusiness;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +19,8 @@ public class BackendApplication  implements CommandLineRunner{
 		
 	}
 
-	@Autowired
-	private IProductBusiness productBusiness;
+	//@Autowired
+	//private ProductCli2Respository productCli2DAO;
 	
 	@Value("${spring.profiles.active}")
 	private String profile;
@@ -40,6 +41,7 @@ public class BackendApplication  implements CommandLineRunner{
 		} catch (Exception e) {
 			log.warn(e.getMessage());
 		}*/
+		//System.out.println(productCli2DAO.findAll());
 		
 	}
 
