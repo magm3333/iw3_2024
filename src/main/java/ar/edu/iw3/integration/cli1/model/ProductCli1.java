@@ -22,5 +22,6 @@ public class ProductCli1 extends Product{
 	@Column(nullable = false, unique = true)
 	private String codCli1;
 
+	private boolean codCli1Temp=false;
 }
 

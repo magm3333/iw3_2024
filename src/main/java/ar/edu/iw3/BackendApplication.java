@@ -1,13 +1,12 @@
 package ar.edu.iw3;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.TimeZone;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import ar.edu.iw3.integration.cli2.model.persistence.ProductCli2Respository;
-import ar.edu.iw3.model.business.IProductBusiness;
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootApplication 
@@ -24,10 +23,20 @@ public class BackendApplication  implements CommandLineRunner{
 	
 	@Value("${spring.profiles.active}")
 	private String profile;
+
+	@Value("${spring.jackson.time-zone:-}")
+	private String backendTimezone;
 	
+
 	@Override
 	public void run(String... args) throws Exception {
-		log.info("Perfil activo '{}'",profile);
+		String tzId = backendTimezone.equals("-") ? TimeZone.getDefault().getID() : backendTimezone;
+		TimeZone.setDefault(TimeZone.getTimeZone(tzId));
+		
+		log.info("-------------------------------------------------------------------------------------------------------------------");
+		log.info("- Initial TimeZone: {} ({})", TimeZone.getDefault().getDisplayName(), TimeZone.getDefault().getID());
+		log.info("- Perfil activo {}",profile);
+		
 		/*
 		try {
 			Product p=new Product();
