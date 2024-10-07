@@ -1,6 +1,8 @@
 package ar.edu.iw3.auth.custom;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ar.edu.iw3.auth.IUserBusiness;
@@ -58,8 +61,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 			throw new LockedException(User.VALIDATION_LOCKED);
 		if (!pEncoder.matches(password, user.getPassword()))
 			throw new BadCredentialsException("Invalid password");
-
-		return new UsernamePasswordAuthenticationToken(user, null);
+		return new UsernamePasswordAuthenticationToken(user, null,user.getAuthorities());
 
 		
 	}

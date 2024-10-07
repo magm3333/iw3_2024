@@ -48,7 +48,6 @@ public class SecurityConfiguration {
 		return new CustomAuthenticationManager(bCryptPasswordEncoder(), userBusiness);
 	}
 
-	
    @Bean
    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// CORS: https://developer.mozilla.org/es/docs/Web/HTTP/CORS
@@ -59,9 +58,13 @@ public class SecurityConfiguration {
 				.requestMatchers("/v3/api-docs/**").permitAll().requestMatchers("/swagger-ui.html").permitAll()
 				.requestMatchers("/swagger-ui/**").permitAll().requestMatchers("/ui/**").permitAll()
 				.requestMatchers("/demo/**").permitAll().anyRequest().authenticated());
-		http.httpBasic(Customizer.withDefaults())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		
+		http.httpBasic(Customizer.withDefaults());
+		
 		http.addFilter(new JWTAuthorizationFilter(authenticationManager()));
+		
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
 		return http.build();
    }
 }
