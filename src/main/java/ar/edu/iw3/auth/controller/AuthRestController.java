@@ -63,7 +63,7 @@ public class AuthRestController extends BaseRestController {
 	@GetMapping(value = "/demo/encodepass", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<?> encodepass(@RequestParam String password) {
 		try {
-			return new ResponseEntity<String>(pEncoder.encode("admin123"), HttpStatus.OK);
+			return new ResponseEntity<String>(pEncoder.encode(password), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(response.build(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage()),
 					HttpStatus.INTERNAL_SERVER_ERROR);

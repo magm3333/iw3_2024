@@ -1,5 +1,7 @@
 package ar.edu.iw3.auth;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ar.edu.iw3.model.business.BusinessException;
@@ -14,5 +16,7 @@ public interface IUserBusiness {
 	public void disable(String usernameOrEmail) throws NotFoundException, BusinessException;
 
 	public void enable(String usernameOrEmail) throws NotFoundException, BusinessException;
+	
+	public List<User> list() throws BusinessException;
 
 }
