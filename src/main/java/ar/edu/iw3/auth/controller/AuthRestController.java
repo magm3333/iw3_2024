@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import ar.edu.iw3.auth.User;
 import ar.edu.iw3.auth.custom.CustomAuthenticationManager;
+import ar.edu.iw3.auth.event.UserEvent;
 import ar.edu.iw3.auth.filters.AuthConstants;
 import ar.edu.iw3.controllers.BaseRestController;
 import ar.edu.iw3.controllers.Constants;
 import ar.edu.iw3.util.IStandartResponseBusiness;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class AuthRestController extends BaseRestController {
@@ -33,9 +36,13 @@ public class AuthRestController extends BaseRestController {
 	private AuthenticationManager authManager;
 	@Autowired
 	private IStandartResponseBusiness response;
+	
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
+
 
 	@PostMapping(value = Constants.URL_LOGIN, produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<?> loginExternalOnlyToken(@RequestParam String username, @RequestParam String password) {
+	public ResponseEntity<?> loginExternalOnlyToken(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
 		Authentication auth = null;
 		try {
 			auth = authManager.authenticate(((CustomAuthenticationManager) authManager).authWrap(username, password));
@@ -54,6 +61,8 @@ public class AuthRestController extends BaseRestController {
 				.withClaim("version", "1.0.0")
 				.withExpiresAt(new Date(System.currentTimeMillis() + AuthConstants.EXPIRATION_TIME))
 				.sign(Algorithm.HMAC512(AuthConstants.SECRET.getBytes()));
+
+		applicationEventPublisher.publishEvent(new UserEvent(user, request, UserEvent.TypeEvent.LOGIN));
 
 		return new ResponseEntity<String>(token, HttpStatus.OK);
 	}

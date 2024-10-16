@@ -22,9 +22,19 @@ import ar.edu.iw3.model.business.ICategoryBusiness;
 import ar.edu.iw3.model.business.IProductBusiness;
 import ar.edu.iw3.model.business.NotFoundException;
 import ar.edu.iw3.util.IStandartResponseBusiness;
+import ar.edu.iw3.util.StandartResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(Constants.URL_PRODUCTS)
+@Tag(description = "API Servicios relacionados con Productos", name = "Product")
 public class ProductRestController extends BaseRestController {
 	// /produtos?precio=100# /a/?/c/d//////?param=valor&param1=valor&param=valor1
 	@Autowired
@@ -84,7 +94,7 @@ public class ProductRestController extends BaseRestController {
 
 	@PutMapping(value = "")
 	public ResponseEntity<?> update(@RequestBody Product product) {
-		try {    
+		try {
 			productBusiness.update(product);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (BusinessException e) {
@@ -110,7 +120,7 @@ public class ProductRestController extends BaseRestController {
 			return new ResponseEntity<>(response.build(HttpStatus.NOT_FOUND, e, e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	// Categorías
 
 	@Autowired
@@ -126,6 +136,19 @@ public class ProductRestController extends BaseRestController {
 		}
 	}
 
+	@Operation(operationId = "load-category", summary = "Este servicio permite cargar una categoría por su id.")
+	@Parameter(in = ParameterIn.PATH, name = "id", schema = @Schema(type = "integer"), required = true, description = "Identificador de la categoría.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Devuelve una Categoría.", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+			@ApiResponse(responseCode = "500", description = "Error interno", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = StandartResponse.class)) }),
+			@ApiResponse(responseCode = "403", description = "No posee autorización para consumir este servicio", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = StandartResponse.class)) }),
+			@ApiResponse(responseCode = "404", description = "No se encuentra la categoría para el identificador informado", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = StandartResponse.class)) })
+
+	})
 	@GetMapping(value = "/categories/{id}")
 	public ResponseEntity<?> loadCategory(@PathVariable long id) {
 		try {
@@ -179,6 +202,4 @@ public class ProductRestController extends BaseRestController {
 		}
 	}
 
-	
-	
 }
